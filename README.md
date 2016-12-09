@@ -1,7 +1,7 @@
 Intro
 -------------
 
-A l'adresse: https://mocksvc.mulesoft.com/mocks/fd8b82e2-2a74-4ef1-ad5e-05645745fbe2\n\n
+A l'adresse: https://mocksvc.mulesoft.com/mocks/fd8b82e2-2a74-4ef1-ad5e-05645745fbe2
 
 Vous avez à votre disposition les endPoint suivants(tous servent du Json):
 
