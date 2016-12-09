@@ -27,7 +27,7 @@ Le but de l'exercice est en utilisant le framework Js de votre choix (Angular2, 
 Application
 -------------
 - [ ] faire au besoin un mapping des objets json
-- [ ] Lister Tous les 'flights' disponible dans un tableau html(utiliser les style materializeCss). Les informations que l'on doit afficher sont : 
+- [ ] Lister Tous les 'flights' disponible dans un tableau html(utiliser les styles materializeCss). Les informations que l'on doit afficher sont : 
 ```
 - paxNumber, 
 - startedAtUtc(formatter la date 'MMMM Do YYYY, h:mm:ss a' via moment.js)
