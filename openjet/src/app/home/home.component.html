@@ -1,0 +1,75 @@
+<div class="section blue-grey darken-4 z-depth-2">
+  <div class="container">
+    <h1 class="center white-text">OpenJet</h1>
+  </div>
+</div>
+<div class="section">
+  <div class="container">
+    <table class="striped responsive-table">
+      <thead>
+        <tr>
+          <th>paxNumber</th>
+          <th>startedAtUtc</th>
+          <th>endedAtUtc</th>
+          <th>empty</th>
+          <th>airportFrom</th>
+          <th>airportTo</th>
+          <th>tailNumber</th>
+          <th>aircrews</th>
+          <th>state</th>
+        </tr>
+      </thead>
+    
+      <tbody>
+        <tr *ngFor="let flight of flights">
+          <td>{{flight.paxNumber}}</td>
+          <td>{{flight.startedAtUtc}}</td>
+          <td>{{flight.endedAtUtc}}</td>
+          <td>
+            <span *ngIf="flight.empty" title="{{flight.empty}}"><i class="material-icons">not_interested</i></span>
+            <span *ngIf="!flight.empty" title="{{flight.empty}}"><i class="material-icons">not_interested</i></span>
+          </td>
+          <td>{{flight.airportFrom}}</td>
+          <td>{{flight.airportTo}}</td>
+          <td>{{flight.tailNumber}}</td>
+          <td>
+            <button data-target="aircrews" class="waves-effect waves-light btn modal-trigger" (click)="getAirCrews(flight.aircrews)">
+              <i class="material-icons">people</i>
+            </button>
+          </td>
+          <td>
+            <button data-target="state" class="waves-effect waves-light btn modal-trigger" (click)="getState(flight.state.legId)">
+              <i class="material-icons">info</i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="aircrews" class="modal" materialize="modal">
+  <div class="modal-content">
+    <ul class="collection with-header">
+      <li class="collection-header"><h4>Aircrews</h4></li>
+      <li class="collection-item" *ngFor="let crew of aircrews">{{crew}}</li>
+    </ul>
+  </div>
+  <div class="modal-footer">
+    <a href="javascript:void(0)" class="modal-action modal-close waves-effect waves-light red darken-4 btn">
+      Close
+    </a>
+  </div>
+</div>
+
+<div id="state" class="modal" materialize="modal">
+  <div class="modal-content">
+    <h4>State</h4>
+    <p class="lead center indigo lighten-4">{{flightState}}</p>
+  </div>
+  <div class="modal-footer">
+    <a href="javascript:void(0)" class="modal-action modal-close waves-effect waves-light red darken-4 btn">
+      Close
+    </a>
+  </div>
+</div>
