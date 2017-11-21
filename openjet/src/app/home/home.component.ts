@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { MaterializeAction } from 'angular2-materialize';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin';
 
 import { AviationService } from '../aviation.service';
 
@@ -19,7 +21,9 @@ export class HomeComponent implements OnInit {
   aircrews: any = [];
   flightState: any;
   
-  constructor(private titleService: Title, private aviationService: AviationService) { }
+  constructor(
+    private titleService: Title, 
+    private aviationService: AviationService) { }
   
   ngOnInit() {
     this.titleService.setTitle('Welcome to OpenJet');
@@ -44,23 +48,26 @@ export class HomeComponent implements OnInit {
     if( list.length > 0 ) {
       list[0].startedAtUtc = moment(list[0].startedAtUtc).format('MMMM Do YYYY, h:mm:ss a');
       list[0].endedAtUtc = moment(list[0].endedAtUtc).format('MMMM Do YYYY, h:mm:ss a');
-      this.aviationService.getAirport( list[0].airportFrom )
-        .subscribe(
-          response => {
-            list[0].airportFrom = response.name;
-            this.aviationService.getAirport( list[0].airportTo )
-              .subscribe(
-                response => { 
-                  list[0].airportTo = response.name;
-                  homeCpt.flights.push( list[0] );
-                  list.splice(0, 1);
-                  homeCpt.formatFlightsData( list );
-                },
-                error => { list[0].airportTo = 'Not Available'; }
-              );
-          },
-          error => { list[0].airportFrom = 'Not Available'; }
-        );
+
+      Observable.forkJoin(
+        this.aviationService.getAirport( list[0].airportFrom ), 
+        this.aviationService.getAirport( list[0].airportTo )
+      ).subscribe(
+        responses => {
+          list[0].airportFrom = responses[0].name;
+          list[0].airportTo = responses[1].name;
+          homeCpt.flights.push( list[0] );
+          list.splice(0, 1);
+          homeCpt.formatFlightsData( list );
+        },
+        error => { 
+          list[0].airportFrom = 'Not Available';
+          list[0].airportTo = 'Not Available';
+          homeCpt.flights.push( list[0] );
+          list.splice(0, 1);
+          homeCpt.formatFlightsData( list );
+        }
+      );
     }
   }
 
@@ -68,25 +75,24 @@ export class HomeComponent implements OnInit {
     var airCrewList = list;
     
     this.aircrews = [];
-    console.log( airCrewList );
-    this.loadCrewFromApi( airCrewList );
+    this.loadCrewFromApi( airCrewList, 0 );
   }
   
-  loadCrewFromApi( airCrewListToCheck ) {
+  loadCrewFromApi( airCrewListToCheck, index ) {
     var homeCpt = this;
 
-    if( airCrewListToCheck.length > 0 ) {
-      this.aviationService.getAircrew( airCrewListToCheck[0] )
+    if( (airCrewListToCheck.length > 0) && (airCrewListToCheck.length > index) ) {
+      this.aviationService.getAircrew( airCrewListToCheck[index] )
         .subscribe(
           response => {
             homeCpt.aircrews.push( response.name );
-            airCrewListToCheck.splice(0, 1);
-            homeCpt.loadCrewFromApi( airCrewListToCheck );
+            index++;
+            homeCpt.loadCrewFromApi( airCrewListToCheck, index );
           },
           error => {
             homeCpt.aircrews.push( 'Not Available' );
-            airCrewListToCheck.splice(0, 1);
-            homeCpt.loadCrewFromApi( airCrewListToCheck );
+            index++;
+            homeCpt.loadCrewFromApi( airCrewListToCheck, index );
           }
         );
     }
